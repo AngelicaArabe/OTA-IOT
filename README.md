@@ -247,3 +247,12 @@ extra_scripts = extra_script.py
 ⭐ **If you find this project useful, give it a star!**  
 Your support helps me improve and share more IoT tools like this.
 
+## 🔮 Future Improvements
+
+Future versions of this project aim to extend its IoT capabilities beyond OTA control and monitoring.  
+A **temperature and pressure sensor** will be integrated to provide environmental data logging in real time.  
+Additionally, the firmware will support a **low-power sleep mode** that can be toggled directly from the web interface.  
+When enabled, the ESP32-S3 will wake up periodically, send sensor data at predefined intervals, and return to deep sleep — optimizing power efficiency.  
+This feature will be particularly useful for remote or solar-powered deployments, where the device can operate autonomously using a **5V solar panel connected via USB**, continuously charging the onboard battery while maintaining data transmission cycles.
+
+
