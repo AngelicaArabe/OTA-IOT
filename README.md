@@ -242,4 +242,8 @@ extra_scripts = extra_script.py
 
 ---
 
-✨ *A professional IoT-ready project supporting OTA updates, WebSocket logging, Wi-Fi setup, and local SPIFFS web hosting.*
+✨ *A DIY IoT-ready project supporting OTA updates, WebSocket logging, Wi-Fi setup, and local SPIFFS web hosting.*
+---
+⭐ **If you find this project useful, give it a star!**  
+Your support helps me improve and share more IoT tools like this.
+
