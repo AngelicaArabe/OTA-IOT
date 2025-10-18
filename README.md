@@ -84,6 +84,23 @@ You’ll see messages like:
 
 ---
 
+### First Boot (Wi-Fi not configured)
+
+If this is your first time running the firmware, or if Wi-Fi credentials were erased,
+the ESP32-S3 will start in Access Point mode.
+
+On your computer or phone, connect to the Wi-Fi network:
+ESP32-Setup
+
+Open your browser and go to:
+```
+http://192.168.4.1
+```
+
+You’ll see the Wi-Fi setup page (wifi.html) where you can enter your network SSID and password.
+
+After saving, the ESP32-S3 will reboot automatically and connect to your configured Wi-Fi.
+
 ### 5️⃣ Access the web interface
 
 After the upload, open the **PlatformIO Serial Monitor**:
@@ -145,7 +162,7 @@ It allows users to:
 - Enter SSID and password manually;
 - Save and reboot the ESP32-S3 with new credentials.
 
-> This feature is ideal for **Access Point (Hotspot) mode**, automatically enabled if no Wi-Fi connection is detected on startup.
+> This feature is ideal for **Access Point (Hotspot) mode**, automatically enabled if no Wi-Fi credentials and connection is detected on startup. 
 
 ---
 
@@ -159,7 +176,7 @@ It allows users to:
 ## 🌐 Esp32S3_XIAO
 
 <p align="center">
-  <img src="images/photo_esp32s3_xiao.jpg.png" alt="ESP32 Used" width="800"/>
+  <img src="images/photo_esp32s3_xiao.jpg" alt="ESP32 Used" width="800"/>
   <br>
   <em>XIAO Sense Hardware</em>
 </p>
@@ -218,7 +235,7 @@ extra_scripts = extra_script.py
 
 ## 📘 Author
 
-**Developed by:** Arthur Perini  
+**Developed by:** engperini  
 **License:** MIT  
 **Version:** 1.1  
 **Compatible with:** ESP32-S3 (XIAO, DevKit, etc.)
