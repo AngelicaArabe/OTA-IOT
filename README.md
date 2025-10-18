@@ -117,6 +117,7 @@ http://192.168.1.45
   <em>Real-time control and OTA via browser</em>
 </p>
 
+
 ## 🌐 Features
 
 ### `index.html`
@@ -128,6 +129,14 @@ It provides:
 - OTA firmware upload with progress bar;
 - Visual connection indicator (WebSocket status);
 - Remote reboot button.
+
+## 🌐 Wifi Setup
+
+<p align="center">
+  <img src="images/wifi_setup.png" alt="ESP32 Wifi Setup" width="800"/>
+  <br>
+  <em>Initial Wifi Setup</em>
+</p>
 
 ### `wifi.html`
 This page handles Wi-Fi configuration and is useful when the device has no saved credentials.  
@@ -146,6 +155,14 @@ It allows users to:
 2. Upload a new `.bin` file (generated during compilation)
 3. The LED will blink three times indicating success
 4. The ESP will automatically restart and run the new firmware
+
+## 🌐 Esp32S3_XIAO
+
+<p align="center">
+  <img src="images/photo_esp32s3_xiao.jpg.png" alt="ESP32 Used" width="800"/>
+  <br>
+  <em>XIAO Sense Hardware</em>
+</p>
 
 ---
 
