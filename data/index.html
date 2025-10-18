@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ESP32 OTA + WebSocket Logs</title>
+<style>
+  body { background:#111; color:#eee; font-family:Arial; text-align:center; margin:30px; }
+  input[type=file], input[type=submit], button { margin:10px; padding:8px 15px; border:none; border-radius:5px; cursor:pointer; }
+  input[type=submit]{background:#333;color:#fff;}
+  button{background:#555;color:#fff;}
+  #prg { margin-top:10px; }
+  pre { background:#000; color:#0f0; text-align:left; padding:10px; height:220px; overflow:auto; border-radius:5px; }
+  .btn-area { margin-top:15px; }
+  #status { margin-top:10px; font-size:14px; }
+</style>
+</head>
+<body>
+<h2>ESP32 OTA + Real-time Logs (WebSocket)</h2>
+
+<form method="POST" enctype="multipart/form-data" id="upload_form">
+  <input type="file" name="update" required>
+  <input type="submit" value="Send OTA">
+</form>
+<div id="prg">Progress: 0%</div>
+
+<div class="btn-area">
+  <button id="btn1">🔁 Reboot</button>
+  <button id="btn2">💡 LED ON</button>
+  <button id="btn3">🌑 LED OFF</button>
+</div>
+
+<h3>Real-time Logs:</h3>
+<div id="status">🟡 Connecting...</div>
+<pre id="logbox"></pre>
+<button onclick="document.getElementById('logbox').innerHTML=''">Clear logs</button>
+
+<script>
+let logBox = document.getElementById('logbox');
+let statusDiv = document.getElementById('status');
+let ws;
+
+function connectWebSocket() {
+  ws = new WebSocket('ws://' + window.location.hostname + ':81/');
+  ws.onopen = () => {
+    statusDiv.innerHTML = "🟢 Connected";
+    statusDiv.style.color = "#0f0";
+  };
+  ws.onclose = () => {
+    statusDiv.innerHTML = "🔴 Disconnected — retrying...";
+    statusDiv.style.color = "#f33";
+    setTimeout(connectWebSocket, 3000);
+  };
+  ws.onmessage = e => {
+    logBox.innerHTML += e.data.replace(/\n/g,'<br>') + '<br>';
+    logBox.scrollTop = logBox.scrollHeight;
+  };
+}
+connectWebSocket();
+
+const form = document.getElementById('upload_form');
+form.addEventListener('submit', e=>{
+  e.preventDefault();
+  const data = new FormData(form);
+  const xhr = new XMLHttpRequest();
+  xhr.upload.addEventListener('progress', evt=>{
+    if (evt.lengthComputable){
+      const per=Math.round((evt.loaded/evt.total)*100);
+      document.getElementById('prg').innerText='Progress: '+per+'%';
+    }
+  });
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      document.getElementById('prg').innerText = 'Upload done, rebooting...';
+    }
+  };
+  xhr.open('POST','/update',true);
+  xhr.send(data);
+});
+
+document.getElementById('btn1').onclick=()=>ws.send('reboot');
+document.getElementById('btn2').onclick=()=>ws.send('led_on');
+document.getElementById('btn3').onclick=()=>ws.send('led_off');
+</script>
+</body>
+</html>
