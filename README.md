@@ -109,6 +109,14 @@ http://192.168.1.45
 
 ---
 
+## 🌐 Web Interface
+
+<p align="center">
+  <img src="images/interface_logs.png" alt="ESP32 Web Interface" width="800"/>
+  <br>
+  <em>Real-time control and OTA via browser</em>
+</p>
+
 ## 🌐 Features
 
 ### `index.html`
